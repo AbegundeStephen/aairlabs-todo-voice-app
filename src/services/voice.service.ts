@@ -1,52 +1,48 @@
 // src/services/voice.service.ts
-import { Audio } from 'expo-av';
-import * as FileSystem from 'expo-file-system';
+import {
+  useAudioRecorder,
+  useAudioRecorderState,
+  AudioModule,
+  RecordingPresets,
+  setAudioModeAsync,
+} from 'expo-audio';
 
 export class VoiceRecorder {
-  private recording: Audio.Recording | null = null;
-  
+  private recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  private state = useAudioRecorderState(this.recorder);
+
   async requestPermissions(): Promise<boolean> {
-    const { status } = await Audio.requestPermissionsAsync();
-    return status === 'granted';
+    const status = await AudioModule.requestRecordingPermissionsAsync();
+    return status.granted;
   }
-  
+
   async startRecording(): Promise<void> {
-    try {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      });
-      
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-      
-      this.recording = recording;
-    } catch (error) {
-      console.error('Failed to start recording:', error);
-      throw error;
+    const hasPerm = await this.requestPermissions();
+    if (!hasPerm) {
+      throw new Error('Recording permission not granted');
     }
+
+    await setAudioModeAsync({
+      allowsRecording: true,
+      playsInSilentMode: true,
+    });
+
+    await this.recorder.prepareToRecordAsync();
+    this.recorder.record();
   }
-  
+
   async stopRecording(): Promise<string> {
-    if (!this.recording) {
-      throw new Error('No recording in progress');
+    await this.recorder.stop();
+    const uri = this.recorder.uri;
+
+    if (!uri) {
+      throw new Error('No recording URI available');
     }
-    
-    try {
-      await this.recording.stopAndUnloadAsync();
-      const uri = this.recording.getURI();
-      this.recording = null;
-      
-      if (!uri) throw new Error('No recording URI');
-      return uri;
-    } catch (error) {
-      console.error('Failed to stop recording:', error);
-      throw error;
-    }
+
+    return uri;
   }
-  
+
   isRecording(): boolean {
-    return this.recording !== null;
+    return this.state.isRecording;
   }
 }

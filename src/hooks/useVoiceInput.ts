@@ -10,8 +10,10 @@ export const useVoiceInput = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const addTask = useTaskStore((state) => state.addTask);
+
+  // Create one recorder instance per hook instance
   const recorder = new VoiceRecorder();
-  
+
   const startRecording = async () => {
     try {
       const hasPermission = await recorder.requestPermissions();
@@ -19,44 +21,43 @@ export const useVoiceInput = () => {
         Alert.alert('Permission Required', 'Please enable microphone access');
         return;
       }
-      
+
       await recorder.startRecording();
       setIsRecording(true);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     } catch (error) {
+      console.error('Failed to start recording:', error);
       Alert.alert('Error', 'Failed to start recording');
-      console.error(error);
     }
   };
-  
+
   const stopRecording = async () => {
     try {
       setIsRecording(false);
       setIsProcessing(true);
-      
+
       const audioUri = await recorder.stopRecording();
-      
-      // Transcribe audio
+      if (!audioUri) throw new Error('No audio recorded');
+
+      // Transcribe the audio file
       const transcript = await transcribeAudio(audioUri);
-      
-      // Split into tasks using AI
+
+      // Generate task titles from the transcript
       const taskTitles = await splitTasksWithAI(transcript);
-      
-      // Add all tasks
-      taskTitles.forEach(title => {
-        addTask({ title, completed: false });
-      });
-      
+
+      // Add tasks to store
+      taskTitles.forEach((title) => addTask({ title, completed: false }));
+
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       Alert.alert('Success', `Added ${taskTitles.length} task(s)`);
     } catch (error) {
+      console.error('Failed to process voice input:', error);
       Alert.alert('Error', 'Failed to process voice input');
-      console.error(error);
     } finally {
       setIsProcessing(false);
     }
   };
-  
+
   const toggleRecording = async () => {
     if (isRecording) {
       await stopRecording();
@@ -64,7 +65,7 @@ export const useVoiceInput = () => {
       await startRecording();
     }
   };
-  
+
   return {
     isRecording,
     isProcessing,
