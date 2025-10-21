@@ -34,6 +34,7 @@ export class VoiceRecorder {
   async stopRecording(): Promise<string> {
     await this.recorder.stop();
     const uri = this.recorder.uri;
+    console.log('Recording stopped, file saved at:', uri);
 
     if (!uri) {
       throw new Error('No recording URI available');

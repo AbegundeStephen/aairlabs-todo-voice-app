@@ -30,16 +30,10 @@ export default function EmptyState({ isDark = false }: EmptyStateProps) {
       <Text style={[styles.title, { color: colors.text }]}>No Tasks Yet</Text>
 
       <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-        Add your first task using the
+        Add your first task using the "+" button below
       </Text>
 
-      <TouchableOpacity
-        style={[styles.iconButton, { borderColor: colors.icon }]}
-        onPress={handleAddTask}
-        accessibilityLabel="Add Task"
-      >
-        <Ionicons name="add" size={24} color={colors.icon} />
-      </TouchableOpacity>
+
 
       <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
         or use the microphone
@@ -54,7 +48,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 32,
-    paddingVertical: 64,
+    paddingVertical: 32,
+ 
   },
   emoji: {
     fontSize: 64,
@@ -72,14 +67,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 4,
   },
-  iconButton: {
-    marginTop: 12,
-    marginBottom: 4,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 1.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  
 });
