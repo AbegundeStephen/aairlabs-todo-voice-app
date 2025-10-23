@@ -8,18 +8,31 @@ export interface Task {
   priority?: 'low' | 'medium' | 'high'; // bonus
 }
 
+// src/types.ts (or wherever your types are defined)
+
+export type FilterStatus = 'all' | 'active' | 'completed' | 'overdue' | 'upcoming';
+
+
 export interface TaskStore {
   tasks: Task[];
   isLoading: boolean;
-  addTask: (task: Omit<Task, 'id' | 'createdAt'>) => void;
+  searchQuery: string;
+  filterStatus: FilterStatus; // Updated type
+  loadTasks: () => Promise<void>;
+  addTask: (taskData: Omit<Task, 'id' | 'createdAt'>) => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
   updateTask: (id: string, updates: Partial<Task>) => void;
-  loadTasks: () => Promise<void>;
-  searchQuery: string;
   setSearchQuery: (query: string) => void;
-  filterStatus: 'all' | 'active' | 'completed';
-  setFilterStatus: (status: 'all' | 'active' | 'completed') => void;
+  setFilterStatus: (status: FilterStatus) => void;
+  getFilteredTasks: () => Task[];
+  getTaskCounts: () => {
+    all: number;
+    active: number;
+    completed: number;
+    overdue: number;
+    upcoming: number;
+  };
 }
 
 export type RootStackParamList = {

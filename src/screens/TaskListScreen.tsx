@@ -5,7 +5,6 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useTaskStore } from '../store/taskStore';
 import { useVoiceInput } from '../hooks/useVoiceInput';
 import { useThemeStore } from '../store/themeStore';
-
 import TaskItem from '../components/TaskItem';
 import SearchBar from '../components/SearchBar';
 import FilterChips from '../components/FilterChips';
@@ -56,21 +55,10 @@ export default function TaskListScreen() {
 
   // Filter and sort tasks
   const filteredTasks = useMemo(() => {
-    let filtered = [...tasks];
+    const filtered = useTaskStore.getState().getFilteredTasks();
 
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (task) =>
-          task.title.toLowerCase().includes(query) ||
-          task.description?.toLowerCase().includes(query)
-      );
-    }
-
-    if (filterStatus === 'active') filtered = filtered.filter((t) => !t.completed);
-    if (filterStatus === 'completed') filtered = filtered.filter((t) => t.completed);
-
-    filtered.sort((a, b) => {
+    // Sorting logic
+    return filtered.sort((a, b) => {
       if (a.completed !== b.completed) return a.completed ? 1 : -1;
       if (a.dueDate && b.dueDate)
         return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
@@ -78,16 +66,11 @@ export default function TaskListScreen() {
       if (b.dueDate) return 1;
       return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
     });
-
-    return filtered;
   }, [tasks, searchQuery, filterStatus]);
 
+
   const taskCounts = useMemo(
-    () => ({
-      all: tasks.length,
-      active: tasks.filter((t) => !t.completed).length,
-      completed: tasks.filter((t) => t.completed).length,
-    }),
+    () => useTaskStore.getState().getTaskCounts(),
     [tasks]
   );
 
@@ -150,16 +133,16 @@ export default function TaskListScreen() {
                 searchQuery
                   ? 'No tasks match your search'
                   : filterStatus === 'completed'
-                  ? 'No completed tasks yet'
-                  : filterStatus === 'active'
-                  ? 'No active tasks. Tap the mic to add one!'
-                  : 'No tasks yet. Tap the mic to add your first task!'
+                    ? 'No completed tasks yet'
+                    : filterStatus === 'active'
+                      ? 'No active tasks. Tap the mic to add one!'
+                      : 'No tasks yet. Tap the mic to add your first task!'
             } as any)}
           />
         }
         refreshControl={
-          <RefreshControl 
-            refreshing={isLoading} 
+          <RefreshControl
+            refreshing={isLoading}
             onRefresh={loadTasks}
             tintColor={colors.primary}
             colors={[colors.primary]}
