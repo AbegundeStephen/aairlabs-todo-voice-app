@@ -13,34 +13,31 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function AppNavigator() {
   const isDark = useThemeStore((state) => state.isDark);
 
-  // Modern light theme with softer colors and better contrast
-  const AppLightTheme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      background: '#FAFBFC',
-      card: '#FFFFFF',
-      text: '#0F172A',
-      border: '#E2E8F0',
-      primary: '#3B82F6',
-      notification: '#EF4444',
-    },
-  };
+ const AppLightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#FFFFFF',  // matches COLORS.light.background
+    card: '#F9FAFB',        // matches COLORS.light.card
+    text: '#1F2937',        // matches COLORS.light.text
+    border: '#E5E7EB',      // matches COLORS.light.border
+    primary: '#6366F1',     // matches COLORS.light.primary
+    notification: '#EF4444', // matches COLORS.light.error
+  },
+};
 
-  // Modern dark theme with deeper blacks and vibrant accents
-  const AppDarkTheme = {
-    ...DarkTheme,
-    colors: {
-      ...DarkTheme.colors,
-      background: '#0A0E1A',
-      card: '#141B2D',
-      text: '#F8FAFC',
-      border: '#1E293B',
-      primary: '#60A5FA',
-      notification: '#F87171',
-    },
-  };
-
+const AppDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: '#111827',  // matches COLORS.dark.background
+    card: '#1F2937',        // matches COLORS.dark.card
+    text: '#F9FAFB',        // matches COLORS.dark.text
+    border: '#374151',      // matches COLORS.dark.border
+    primary: '#818CF8',     // matches COLORS.dark.primary
+    notification: '#F87171', // matches COLORS.dark.error
+  },
+};
   return (
     <NavigationContainer theme={isDark ? AppDarkTheme : AppLightTheme}>
       <StatusBar

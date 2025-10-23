@@ -1,16 +1,18 @@
-// src/screens/TaskListScreen.tsx
-import React, { useEffect, useMemo, useCallback } from 'react';
+//src/screens/TaskListScreen.tsx
+import React, { useEffect, useMemo, useCallback, useLayoutEffect } from 'react';
 import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useTaskStore } from '../store/taskStore';
 import { useVoiceInput } from '../hooks/useVoiceInput';
+import { useThemeStore } from '../store/themeStore';
+
 import TaskItem from '../components/TaskItem';
 import SearchBar from '../components/SearchBar';
 import FilterChips from '../components/FilterChips';
 import FAB from '../components/FAB';
 import EmptyState from '../components/EmptyState';
 import LoadingOverlay from '../components/LoadingOverlay';
-import { useThemeStore } from '../store/themeStore';
+import ThemeToggle from '../components/ThemeToggle';
 import { COLORS } from '../constants/theme';
 
 type RootStackParamList = {
@@ -21,8 +23,9 @@ type RootStackParamList = {
 export default function TaskListScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const isDark = useThemeStore((state) => state.isDark);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
   const colors = isDark ? COLORS.dark : COLORS.light;
-  
+
   const {
     tasks,
     isLoading,
@@ -34,129 +37,108 @@ export default function TaskListScreen() {
     filterStatus,
     setFilterStatus,
   } = useTaskStore();
-  
-  const { 
-    isRecording, 
-    isProcessing, 
-    toggleRecording, 
-    recordingDuration 
-  } = useVoiceInput();
-  
+
+  const { isRecording, isProcessing, toggleRecording } = useVoiceInput();
+
+  // Add theme toggle to header
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+      ),
+    });
+  }, [navigation, isDark, toggleTheme]);
+
   // Load tasks on mount
   useEffect(() => {
     loadTasks();
   }, [loadTasks]);
-  
-  // Filter tasks based on search and filter status
+
+  // Filter and sort tasks
   const filteredTasks = useMemo(() => {
     let filtered = [...tasks];
-    
-    // Apply search filter
-    if (searchQuery && searchQuery.trim().length > 0) {
-      const query = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter(task =>
-        task.title.toLowerCase().includes(query) ||
-        task.description?.toLowerCase().includes(query)
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (task) =>
+          task.title.toLowerCase().includes(query) ||
+          task.description?.toLowerCase().includes(query)
       );
     }
-    
-    // Apply status filter
-    switch (filterStatus) {
-      case 'active':
-        filtered = filtered.filter(task => !task.completed);
-        break;
-      case 'completed':
-        filtered = filtered.filter(task => task.completed);
-        break;
-      case 'all':
-      default:
-        // Show all tasks
-        break;
-    }
-    
-    // Sort: incomplete tasks first, then by due date, then by creation date
+
+    if (filterStatus === 'active') filtered = filtered.filter((t) => !t.completed);
+    if (filterStatus === 'completed') filtered = filtered.filter((t) => t.completed);
+
     filtered.sort((a, b) => {
-      // First, sort by completion status
-      if (a.completed !== b.completed) {
-        return a.completed ? 1 : -1;
-      }
-      
-      // For incomplete tasks, sort by due date (soonest first)
-      if (!a.completed && !b.completed) {
-        if (a.dueDate && b.dueDate) {
-          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-        }
-        if (a.dueDate) return -1; // Tasks with due dates come first
-        if (b.dueDate) return 1;
-      }
-      
-      // Finally, sort by creation date (newest first)
+      if (a.completed !== b.completed) return a.completed ? 1 : -1;
+      if (a.dueDate && b.dueDate)
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      if (a.dueDate) return -1;
+      if (b.dueDate) return 1;
       return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
     });
-    
+
     return filtered;
   }, [tasks, searchQuery, filterStatus]);
-  
-  // Calculate task counts for filter chips
-  const taskCounts = useMemo(() => ({
-    all: tasks.length,
-    active: tasks.filter(t => !t.completed).length,
-    completed: tasks.filter(t => t.completed).length,
-  }), [tasks]);
-  
-  // Handle task toggle with optimistic update
-  const handleToggleTask = useCallback((taskId: string) => {
-    toggleTask(taskId);
-  }, [toggleTask]);
-  
-  // Handle task deletion
-  const handleDeleteTask = useCallback((taskId: string) => {
-    deleteTask(taskId);
-  }, [deleteTask]);
-  
-  // Navigate to task detail
-  const handleTaskPress = useCallback((taskId: string) => {
-    navigation.navigate('AddTask', { taskId });
-  }, [navigation]);
-  
-  // Render task item
-  const renderTask = useCallback(({ item }: { item: typeof tasks[0] }) => (
-    <TaskItem
-      task={item}
-      onToggle={() => handleToggleTask(item.id)}
-      onDelete={() => handleDeleteTask(item.id)}
-      onPress={() => handleTaskPress(item.id)}
-    />
-  ), [handleToggleTask, handleDeleteTask, handleTaskPress]);
-  
-  // Key extractor for FlatList
+
+  const taskCounts = useMemo(
+    () => ({
+      all: tasks.length,
+      active: tasks.filter((t) => !t.completed).length,
+      completed: tasks.filter((t) => t.completed).length,
+    }),
+    [tasks]
+  );
+
+  const handleToggleTask = useCallback(
+    (taskId: string) => toggleTask(taskId),
+    [toggleTask]
+  );
+
+  const handleDeleteTask = useCallback(
+    (taskId: string) => deleteTask(taskId),
+    [deleteTask]
+  );
+
+  const handleTaskPress = useCallback(
+    (taskId: string) => navigation.navigate('AddTask', { taskId }),
+    [navigation]
+  );
+
+  const renderTask = useCallback(
+    ({ item }: { item: typeof tasks[0] }) => (
+      <TaskItem
+        task={item}
+        onToggle={() => handleToggleTask(item.id)}
+        onDelete={() => handleDeleteTask(item.id)}
+        onPress={() => handleTaskPress(item.id)}
+      />
+    ),
+    [handleToggleTask, handleDeleteTask, handleTaskPress]
+  );
+
   const keyExtractor = useCallback((item: typeof tasks[0]) => item.id, []);
-  
-  // Get loading overlay message
+
   const loadingMessage = useMemo(() => {
-    if (isRecording) {
-      return 'Recording...';
-    }
-    if (isProcessing) {
-      return 'Processing voice input...';
-    }
+    if (isRecording) return 'Recording...';
+    if (isProcessing) return 'Processing voice input...';
     return 'Loading...';
   }, [isRecording, isProcessing]);
-  
+
   return (
-    <View style={styles.container}>
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <SearchBar 
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-      />
-      
-      <FilterChips 
-        selectedFilter={filterStatus}
-        onFilterChange={setFilterStatus}
-        taskCounts={taskCounts}
-      />
-      
+      {/* Header Section */}
+      <View style={[styles.headerSection, { backgroundColor: colors.background }]}>
+        <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
+        <FilterChips
+          selectedFilter={filterStatus}
+          onFilterChange={setFilterStatus}
+          taskCounts={taskCounts}
+        />
+      </View>
+
+      {/* Task List */}
       <FlatList
         data={filteredTasks}
         keyExtractor={keyExtractor}
@@ -194,18 +176,14 @@ export default function TaskListScreen() {
         initialNumToRender={15}
         windowSize={21}
       />
-      
-      <FAB 
-        onPress={toggleRecording} 
-        isRecording={isRecording}
-      />
-      
-      {isProcessing && (
-        <LoadingOverlay 
-          message={loadingMessage}
-        />
-      )}
-    </View>
+
+      {/* Floating Action Button */}
+      <View style={styles.fabContainer}>
+        <FAB onPress={toggleRecording} isRecording={isRecording} />
+      </View>
+
+      {/* Loading Overlay */}
+      {isProcessing && <LoadingOverlay message={loadingMessage} />}
     </View>
   );
 }
@@ -213,16 +191,26 @@ export default function TaskListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: '100%',
+  },
+  headerSection: {
+    paddingHorizontal: 0,
+    paddingTop: 12,
+    paddingBottom: 4,
+    gap: 8,
   },
   listContent: {
-    paddingTop: 8,
-    paddingBottom: 100, // Extra space for FAB
-    paddingHorizontal: 20,
+    paddingBottom: 120,
+    paddingHorizontal: 16,
   },
   emptyListContent: {
-
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  fabContainer: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
   },
 });

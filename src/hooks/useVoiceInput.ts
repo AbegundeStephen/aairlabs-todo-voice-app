@@ -10,7 +10,7 @@ import {
 } from 'expo-audio';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Haptics from 'expo-haptics';
-import { transcribeAudio, splitTasksWithAI } from '../services/openai.service';
+import { transcribeAudio, splitTasksWithAI } from '../services/assemblyai.service';
 import { useTaskStore } from '../store/taskStore';
 
 export const useVoiceInput = () => {

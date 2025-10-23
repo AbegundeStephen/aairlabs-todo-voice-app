@@ -1,5 +1,5 @@
 // ==========================================
-// FILE: src/services/openai.service.ts
+// FILE: src/services/assemblyai.service.ts
 // ==========================================
 import axios from 'axios';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -7,7 +7,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 // -------------------------------------------------------------
 // ✅ Config
 // -------------------------------------------------------------
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL; // e.g. https://your-vercel-app.vercel.app
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL; //hosted on vercel
 
 if (!API_BASE_URL) {
   console.warn('⚠️ Missing EXPO_PUBLIC_API_BASE_URL in your .env file');

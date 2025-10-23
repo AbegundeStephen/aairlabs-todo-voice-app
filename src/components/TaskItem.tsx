@@ -30,9 +30,9 @@ export default function TaskItem({ task, onToggle, onDelete, onPress }: Props) {
   
   const getPriorityColor = () => {
     switch (task.priority) {
-      case 'high': return '#EF4444';
-      case 'medium': return '#F59E0B';
-      case 'low': return '#10B981';
+      case 'high': return colors.error;
+      case 'medium': return colors.warning;
+      case 'low': return colors.success;
       default: return null;
     }
   };
@@ -62,6 +62,7 @@ export default function TaskItem({ task, onToggle, onDelete, onPress }: Props) {
         styles.container,
         { 
           backgroundColor: colors.card,
+          borderColor: colors.border,
           transform: [{ scale: pressed ? 0.98 : 1 }],
           opacity: pressed ? 0.95 : 1,
         }
@@ -102,7 +103,7 @@ export default function TaskItem({ task, onToggle, onDelete, onPress }: Props) {
             style={[
               styles.title,
               { color: colors.text },
-              task.completed && styles.completedText
+              task.completed && [styles.completedText, { color: colors.textSecondary }]
             ]}
             numberOfLines={2}
           >
@@ -126,18 +127,18 @@ export default function TaskItem({ task, onToggle, onDelete, onPress }: Props) {
               styles.dueDateTag,
               { 
                 backgroundColor: isOverdue 
-                  ? 'rgba(239, 68, 68, 0.1)' 
-                  : isDark ? 'rgba(96, 165, 250, 0.15)' : 'rgba(59, 130, 246, 0.1)'
+                  ? isDark ? 'rgba(248, 113, 113, 0.15)' : 'rgba(239, 68, 68, 0.1)' 
+                  : isDark ? 'rgba(129, 140, 248, 0.15)' : 'rgba(99, 102, 241, 0.1)'
               }
             ]}>
               <Ionicons 
                 name="calendar-outline" 
                 size={12} 
-                color={isOverdue ? '#EF4444' : colors.primary} 
+                color={isOverdue ? colors.error : colors.primary} 
               />
               <Text style={[
                 styles.dueDateText,
-                { color: isOverdue ? '#EF4444' : colors.primary }
+                { color: isOverdue ? colors.error : colors.primary }
               ]}>
                 {formatDueDate(task.dueDate)}
               </Text>
@@ -153,7 +154,7 @@ export default function TaskItem({ task, onToggle, onDelete, onPress }: Props) {
           styles.deleteButton,
           {
             backgroundColor: pressed 
-              ? (isDark ? 'rgba(239, 68, 68, 0.15)' : 'rgba(239, 68, 68, 0.1)')
+              ? isDark ? 'rgba(248, 113, 113, 0.15)' : 'rgba(239, 68, 68, 0.1)'
               : 'transparent'
           }
         ]}
@@ -167,11 +168,14 @@ export default function TaskItem({ task, onToggle, onDelete, onPress }: Props) {
 
 const styles = StyleSheet.create({
   container: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    marginBottom: 12,
+    padding: 12,
+    marginBottom: 6,
+    marginTop: 16,
     borderRadius: 16,
+    borderWidth: 1,
     // Modern shadow - softer and more elevated
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -214,7 +218,7 @@ const styles = StyleSheet.create({
   },
   completedText: {
     textDecorationLine: 'line-through',
-    opacity: 0.5,
+    opacity: 0.6,
   },
   description: {
     fontSize: 14,

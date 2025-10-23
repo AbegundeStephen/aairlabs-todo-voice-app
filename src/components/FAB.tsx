@@ -109,7 +109,7 @@ export default function FAB({ onPress, isRecording = false }: Props) {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 32,
+    bottom: 20,
     right: 24,
     alignItems: 'center',
     gap: 16,

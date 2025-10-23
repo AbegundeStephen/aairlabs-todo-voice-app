@@ -44,7 +44,7 @@ export default function EmptyState({ isDark = false }: EmptyStateProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 32,

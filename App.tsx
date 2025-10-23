@@ -1,6 +1,5 @@
-// ==========================================
-// FILE: App.tsx
-// ==========================================
+
+//App.tsx
 import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import AppNavigator from './src/navigation/AppNavigator';
