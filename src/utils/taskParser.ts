@@ -1,8 +1,7 @@
-// ==========================================
-// FILE: src/utils/taskParser.ts
-// ==========================================
+//src/utils/taskParser.ts
+
 /**
- * Fallback task parser when AI is unavailable
+ 
  * Splits natural language input into separate tasks
  */
 export const parseTasksLocally = (text: string): string[] => {

@@ -1,8 +1,7 @@
-// src/navigation/AppNavigator.tsx
 import React from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar, Platform } from 'react-native';
+import { StatusBar, Platform, Image } from 'react-native';
 import TaskListScreen from '../screens/TaskListScreen';
 import AddTaskScreen from '../screens/AddTaskScreen';
 import { RootStackParamList } from '../types';
@@ -13,31 +12,32 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 export default function AppNavigator() {
   const isDark = useThemeStore((state) => state.isDark);
 
- const AppLightTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: '#FFFFFF',  // matches COLORS.light.background
-    card: '#F9FAFB',        // matches COLORS.light.card
-    text: '#1F2937',        // matches COLORS.light.text
-    border: '#E5E7EB',      // matches COLORS.light.border
-    primary: '#6366F1',     // matches COLORS.light.primary
-    notification: '#EF4444', // matches COLORS.light.error
-  },
-};
+  const AppLightTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: '#FFFFFF',
+      card: '#F9FAFB',
+      text: '#1F2937',
+      border: '#E5E7EB',
+      primary: '#6366F1',
+      notification: '#EF4444',
+    },
+  };
 
-const AppDarkTheme = {
-  ...DarkTheme,
-  colors: {
-    ...DarkTheme.colors,
-    background: '#111827',  // matches COLORS.dark.background
-    card: '#1F2937',        // matches COLORS.dark.card
-    text: '#F9FAFB',        // matches COLORS.dark.text
-    border: '#374151',      // matches COLORS.dark.border
-    primary: '#818CF8',     // matches COLORS.dark.primary
-    notification: '#F87171', // matches COLORS.dark.error
-  },
-};
+  const AppDarkTheme = {
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      background: '#111827',
+      card: '#1F2937',
+      text: '#F9FAFB',
+      border: '#374151',
+      primary: '#818CF8',
+      notification: '#F87171',
+    },
+  };
+
   return (
     <NavigationContainer theme={isDark ? AppDarkTheme : AppLightTheme}>
       <StatusBar
@@ -45,6 +45,7 @@ const AppDarkTheme = {
         backgroundColor={isDark ? '#0A0E1A' : '#FFFFFF'}
         translucent={false}
       />
+
       <Stack.Navigator
         screenOptions={{
           headerShadowVisible: false,
@@ -70,8 +71,16 @@ const AppDarkTheme = {
           options={{
             title: 'My Tasks',
             headerLargeTitle: Platform.OS === 'ios',
+            headerLeft: () => (
+              <Image
+                source={require('../../assets/todo_voice_app.png')}
+                style={{ width: 32, height: 32, marginLeft: 10, borderRadius: 6 }}
+                resizeMode="contain"
+              />
+            ),
           }}
         />
+
         <Stack.Screen
           name="AddTask"
           component={AddTaskScreen}

@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "aairlabs-todo-voice-app",
-    "slug": "aairlabs-todo-voice-app",
+    "name": "AAIRLABS-todo-voice-app",
+    "slug": "AAIR-todo-voice-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/todo_voice_app.png",
     "userInterfaceStyle": "light",
     "jsEngine": "hermes",
     "newArchEnabled": true,
     "scheme": "aairlabs",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/todo_voice_app.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/todo_voice_app.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
