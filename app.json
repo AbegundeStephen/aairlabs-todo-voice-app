@@ -18,8 +18,10 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "This app requires microphone access to add tasks via voice input."
-      }
+        "NSMicrophoneUsageDescription": "This app requires microphone access to add tasks via voice input.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bundleIdentifier": "com.abegunde93.aairlabstodovoiceapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,9 +29,6 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "RECORD_AUDIO",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS",
         "RECORD_AUDIO",
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
