@@ -1,4 +1,4 @@
-// src/hooks/useVoiceInput.ts - Simplified Version (Use this one first)
+// src/hooks/useVoiceInput.ts 
 import { useState, useCallback } from 'react';
 import { Alert } from 'react-native';
 import {
@@ -13,6 +13,7 @@ import * as Haptics from 'expo-haptics';
 import { transcribeAudio, splitTasksWithAI } from '../services/assemblyai.service';
 import { useTaskStore } from '../store/taskStore';
 
+// Custom hook to manage voice input for task creation
 export const useVoiceInput = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,14 +34,14 @@ export const useVoiceInput = () => {
     if (recorderState.isRecording) {
       console.log('Stopping recording...');
       let audioUri: string | null = null;
-      
+
       try {
         setIsProcessing(true);
         setError(null);
 
         // Stop the recorder
         await recorder.stop();
-        
+
         // Get the URI
         audioUri = recorder.uri;
         console.log('Stopped. URI:', audioUri);
@@ -50,9 +51,9 @@ export const useVoiceInput = () => {
         }
 
         // Verify file (request size explicitly and guard its presence)
-                const fileInfo = await FileSystem.getInfoAsync(audioUri);
-                const fileSize = fileInfo && typeof (fileInfo as any).size === 'number' ? (fileInfo as any).size : 0;
-                console.log('File size:', fileSize);
+        const fileInfo = await FileSystem.getInfoAsync(audioUri);
+        const fileSize = fileInfo && typeof (fileInfo as any).size === 'number' ? (fileInfo as any).size : 0;
+        console.log('File size:', fileSize);
 
         if (!fileInfo.exists || fileSize === 0) {
           throw new Error('Invalid recording file');
@@ -92,7 +93,7 @@ export const useVoiceInput = () => {
         Alert.alert('Error', msg);
       } finally {
         setIsProcessing(false);
-        
+
         // Cleanup
         if (audioUri) {
           try {
@@ -102,17 +103,17 @@ export const useVoiceInput = () => {
           }
         }
       }
-      
+
     } else {
       // Start recording
       console.log('Starting recording...');
-      
+
       try {
         setError(null);
-        
+
         // Request permission
         const { granted } = await AudioModule.requestRecordingPermissionsAsync();
-        
+
         if (!granted) {
           Alert.alert('Permission Denied', 'Please enable microphone access');
           return;
@@ -127,7 +128,7 @@ export const useVoiceInput = () => {
         // Prepare and start
         await recorder.prepareToRecordAsync();
         recorder.record();
-        
+
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         console.log('Recording started');
 

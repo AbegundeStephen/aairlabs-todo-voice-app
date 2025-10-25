@@ -32,15 +32,13 @@ Say into the mic:
 ```bash
 # 1. Create the project
 npx create-expo-app TodoApp --template blank-typescript
-cd TodoApp
+cd aairlabs-todo-voice-app
 
 # 2. Install dependencies
 npm install
 
 # 3. Copy example environment file and add your OpenAI key
 cp .env.example .env
-# then edit .env and add:
-# EXPO_PUBLIC_OPENAI_API_KEY=your_actual_key_here
 
 # 4. Start the app
 npx expo start
@@ -57,7 +55,7 @@ AI Task Parsing: GPT-4
 Testing: Jest + React Native Testing Library
 
 📁 Project Structure
-TodoApp/
+AAIRLABS-TODO-VOICE-APP/
 ├─ src/
 │  ├─ components/        # UI components (TaskItem, FAB, etc.)
 │  ├─ screens/           # Screens (TaskList, AddTask)
@@ -74,28 +72,6 @@ TodoApp/
 ├─ .env
 ├─ .env.example
 └─ README.md
-
-
-⚙️ Dependency Installation
-# Navigation
-npx expo install @react-navigation/native @react-navigation/native-stack react-native-screens react-native-safe-area-context
-# Storage
-npx expo install @react-native-async-storage/async-storage
-# Audio & Voice
-npx expo install expo-av expo-file-system
-# UI & Feedback
-npx expo install expo-haptics @expo/vector-icons
-# State & API
-npm install zustand axios
-# Animations
-npm install react-native-reanimated
-# Testing
-npm install --save-dev @testing-library/react-native @testing-library/jest-native jest-expo @testing-library/react-hooks
-
-
-⚙️ Environment Variables
-Create a .env file:
-EXPO_PUBLIC_OPENAI_API_KEY=your_actual_api_key_here
 
 
 🧪 Testing

@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { Task, TaskStore } from '../types';
 import * as StorageService from '../services/storage.service';
 
-// Helper functions for filtering
+// Helper functions for filtering tasks for different criteria
 const isOverdue = (task: Task) => {
   if (!task.dueDate || task.completed) return false;
   const now = new Date();
@@ -23,18 +23,21 @@ const isUpcoming = (task: Task) => {
   return diffDays >= 0 && diffDays <= 7; // Next 7 days
 };
 
+// Create the task store
 export const useTaskStore = create<TaskStore>((set, get) => ({
   tasks: [],
   isLoading: false,
   searchQuery: '',
   filterStatus: 'all',
-  
+
+  // Load tasks from storage
   loadTasks: async () => {
     set({ isLoading: true });
     const tasks = await StorageService.getTasks();
     set({ tasks, isLoading: false });
   },
   
+  // CRUD operations
   addTask: (taskData) => {
     const newTask: Task = {
       ...taskData,

@@ -1,6 +1,4 @@
-// ==========================================
-// FILE: src/store/themeStore.ts
-// ==========================================
+// src/store/themeStore.ts
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -10,8 +8,10 @@ interface ThemeStore {
   loadTheme: () => Promise<void>;
 }
 
+// Key for AsyncStorage
 const THEME_KEY = '@todo_theme';
 
+// Create the theme store that would be used globally
 export const useThemeStore = create<ThemeStore>((set) => ({
   isDark: false,
   

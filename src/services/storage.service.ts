@@ -2,8 +2,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Task } from '../types';
 
+// Key for AsyncStorage
 const TASKS_KEY = '@todo_tasks';
 
+// Function to get all tasks from storage
 export const getTasks = async (): Promise<Task[]> => {
   try {
     const data = await AsyncStorage.getItem(TASKS_KEY);

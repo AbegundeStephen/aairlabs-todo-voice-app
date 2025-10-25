@@ -7,8 +7,10 @@ import AddTaskScreen from '../screens/AddTaskScreen';
 import { RootStackParamList } from '../types';
 import { useThemeStore } from '../store/themeStore';
 
+// Create the stack navigator
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+// Main App Navigator component
 export default function AppNavigator() {
   const isDark = useThemeStore((state) => state.isDark);
 

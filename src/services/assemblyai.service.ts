@@ -1,26 +1,26 @@
-// ==========================================
-// FILE: src/services/assemblyai.service.ts
-// ==========================================
+// src/services/assemblyai.service.ts
+
 import axios from 'axios';
 import * as FileSystem from 'expo-file-system/legacy';
 
-// -------------------------------------------------------------
-// ✅ Config
-// -------------------------------------------------------------
+// Config:the audio transcribing and task splitting backend feature
+// Config:the audio transcribing and task splitting backend feature 
+// are hosted separately on vercel due assemlyai usage policy
+
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL; //hosted on vercel
 
 if (!API_BASE_URL) {
-  console.warn('⚠️ Missing EXPO_PUBLIC_API_BASE_URL in your .env file');
+  console.warn('Missing EXPO_PUBLIC_API_BASE_URL in the .env file');
 }
 
-// -------------------------------------------------------------
-// ✅ Transcribe audio with Whisper (via backend)
-// -------------------------------------------------------------
+
+// Transcribe audio with Whisper (via backend)
+
 export const transcribeAudio = async (audioUri: string): Promise<string> => {
-  console.log("📤 Reading audio file...");
+  console.log("Reading audio file...");
   const base64 = await FileSystem.readAsStringAsync(audioUri, { encoding: 'base64' });
 
-  console.log("🎙️ Uploading for transcription...");
+  console.log("Uploading for transcription...");
   try {
     const response = await axios.post(
       `${process.env.EXPO_PUBLIC_API_BASE_URL}/api/transcribe`,
@@ -28,13 +28,13 @@ export const transcribeAudio = async (audioUri: string): Promise<string> => {
       { timeout: 30000 }
     );
 
-    console.log("✅ Transcription success:", response.data);
+    console.log("Transcription success:", response.data);
     return response.data.text;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
-      console.error("❌ Transcription failed:", error.response?.data || error.message);
+      console.error("Transcription failed:", error.response?.data || error.message);
     } else {
-      console.error("❌ Transcription failed:", error);
+      console.error("Transcription failed:", error);
     }
     throw new Error(
       error.response?.data?.error || "Failed to transcribe audio. Please check your backend logs."
@@ -42,9 +42,8 @@ export const transcribeAudio = async (audioUri: string): Promise<string> => {
   }
 };
 
-// -------------------------------------------------------------
-// ✅ Split transcript into tasks with GPT (via backend)
-// -------------------------------------------------------------
+
+//Split transcript into tasks with GPT (via backend)
 export const splitTasksWithAI = async (transcript: string): Promise<string[]> => {
   try {
     if (!transcript || transcript.trim().length === 0)
@@ -56,23 +55,22 @@ export const splitTasksWithAI = async (transcript: string): Promise<string[]> =>
 
     const tasks = response.data?.tasks;
     if (!tasks || !Array.isArray(tasks) || tasks.length === 0) {
-      console.warn('⚠️ No valid tasks from backend, using fallback');
+      console.warn('No valid tasks from backend, using fallback');
       return splitTasksFallback(transcript);
     }
 
-    console.log('✅ Extracted tasks:', tasks);
+    console.log('Extracted tasks:', tasks);
     return tasks;
   } catch (error: any) {
-    console.error('❌ Task splitting failed:', error.response?.data || error.message);
+    console.error('Task splitting failed:', error.response?.data || error.message);
     return splitTasksFallback(transcript);
   }
 };
 
-// -------------------------------------------------------------
-// ✅ Fallback task extraction if GPT fails
-// -------------------------------------------------------------
+
+//Fallback task extraction if GPT fails
 const splitTasksFallback = (text: string): string[] => {
-  console.log('🔄 Using fallback task splitting');
+  console.log('Using fallback task splitting');
   const delimiters = /\s+and\s+|,\s*(?:and\s+)?|;\s+|\.\s+|then\s+|also\s+|plus\s+/i;
 
   const tasks = text

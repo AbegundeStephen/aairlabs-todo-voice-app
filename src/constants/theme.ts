@@ -1,3 +1,4 @@
+// Theme constants for light and dark modes
 export const COLORS = {
   light: {
     primary: '#6366F1',
@@ -23,6 +24,7 @@ export const COLORS = {
   },
 };
 
+// Spacing constants
 export const SPACING = {
   xs: 4,
   sm: 8,
@@ -31,6 +33,7 @@ export const SPACING = {
   xl: 32,
 };
 
+// Typography styles
 export const TYPOGRAPHY = {
   title: {
     fontSize: 24,

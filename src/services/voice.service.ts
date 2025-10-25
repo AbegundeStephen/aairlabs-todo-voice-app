@@ -7,6 +7,7 @@ import {
   setAudioModeAsync,
 } from 'expo-audio';
 
+// Service to handle voice recording functionality
 export class VoiceRecorder {
   private recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   private state = useAudioRecorderState(this.recorder);
