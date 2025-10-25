@@ -1,23 +1,21 @@
-// ==========================================
-// FILE: src/utils/date.utils.ts
-// ==========================================
-/**
- * Format date to readable string
- */
+//src/utils/date.utils.ts
+
+
+//Format date to readable string
 export const formatDate = (date: Date): string => {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
-  
+
   const dateStr = date.toDateString();
   const todayStr = today.toDateString();
   const tomorrowStr = tomorrow.toDateString();
-  
+
   if (dateStr === todayStr) return 'Today';
   if (dateStr === tomorrowStr) return 'Tomorrow';
-  
-  return date.toLocaleDateString('en-US', { 
-    month: 'short', 
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
     day: 'numeric',
     year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
   });

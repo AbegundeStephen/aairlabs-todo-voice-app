@@ -100,7 +100,7 @@ npm test           # Run tests
 
 ## Testing
 ```bash
-npm test
+npm test or npx jest __tests__/utils/taskParser.test.ts  
 ```
 
 Key test files:

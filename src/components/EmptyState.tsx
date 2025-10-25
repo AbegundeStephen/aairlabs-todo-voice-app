@@ -1,6 +1,5 @@
-// ==========================================
-// FILE: src/components/EmptyState.tsx
-// ==========================================
+//src/components/EmptyState.tsx
+
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 32,
     paddingVertical: 32,
- 
+
   },
   emoji: {
     fontSize: 64,
@@ -67,5 +66,5 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 4,
   },
-  
+
 });
