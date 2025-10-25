@@ -1,7 +1,8 @@
 {
   "expo": {
     "name": "AAIRLABS-todo-voice-app",
-    "slug": "AAIR-todo-voice-app",
+    "slug": "aairlabs-todo-voice-app",
+    "owner": "abegunde93",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/todo_voice_app.png",
@@ -52,8 +53,14 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "your-project-id-here"
+        "projectId": "1433d7fc-3b61-4e49-8c66-cd17db0e7a01"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/1433d7fc-3b61-4e49-8c66-cd17db0e7a01"
     }
   }
 }
